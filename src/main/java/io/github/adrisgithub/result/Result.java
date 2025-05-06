@@ -15,4 +15,8 @@ public sealed interface Result<T, E extends RuntimeException> permits FailureRes
     return new SuccessResult<>(Objects.requireNonNull(value));
   }
 
+  static <E extends RuntimeException> Result<Void, E> of(E exception) throws NullPointerException {
+    return new FailureResult<>(Objects.requireNonNull(exception));
+  }
+
 }
