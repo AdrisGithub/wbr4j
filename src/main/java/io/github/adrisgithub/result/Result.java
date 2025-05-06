@@ -101,12 +101,18 @@ public sealed interface Result<T, E extends RuntimeException> permits FailureRes
   }
 
   @SuppressWarnings("unchecked")
-  default <NT> Result<NT, RuntimeException> map(
-      Function<? super T, ? super NT> function) {
+  default <NT> Result<NT, RuntimeException> mapUnsafe(Function<? super T, ? super NT> function) {
     return getValue()
         .map(t -> (Result<NT, RuntimeException>) Result.from(() ->
             (NT) Objects.requireNonNull(function).apply(t)))
         .orElse((Result<NT, RuntimeException>) this);
+  }
+
+  @SuppressWarnings("unchecked")
+  default <NT> Result<NT, E> map(Function<T, ? super NT> function) {
+    return getValue()
+        .map(t -> Result.<NT, E>of((NT) Objects.requireNonNull(function).apply(t)))
+        .orElse((Result<NT, E>) this);
   }
 
   @SuppressWarnings("unchecked")
