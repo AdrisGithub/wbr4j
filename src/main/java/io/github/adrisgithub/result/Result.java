@@ -80,4 +80,17 @@ public sealed interface Result<T, E extends RuntimeException> permits FailureRes
         .orElseThrow(() -> getError().orElseThrow());
   }
 
+  default T orElse(T other) {
+    return orElse(() -> other);
+  }
+
+  default E orElse(E exception) {
+    return getError().orElse(exception);
+  }
+
+  default T orElse(Supplier<? extends T> supplier) {
+    return getValue()
+        .orElseGet(Objects.requireNonNull(supplier));
+  }
+
 }
