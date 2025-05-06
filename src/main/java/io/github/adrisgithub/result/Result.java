@@ -1,5 +1,6 @@
 package io.github.adrisgithub.result;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public sealed interface Result<T, E extends RuntimeException> permits FailureResult, SuccessResult {
@@ -9,4 +10,9 @@ public sealed interface Result<T, E extends RuntimeException> permits FailureRes
   Optional<T> getValue();
 
   ResultType getType();
+
+  static <T, E extends RuntimeException> Result<T, E> of(T value) throws NullPointerException {
+    return new SuccessResult<>(Objects.requireNonNull(value));
+  }
+
 }
