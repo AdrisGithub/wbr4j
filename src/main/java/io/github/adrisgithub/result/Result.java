@@ -55,4 +55,24 @@ public sealed interface Result<T, E extends RuntimeException> permits FailureRes
     this.getError().ifPresent(Objects.requireNonNull(consumer));
   }
 
+  default Result<T, E> onSuccess(Consumer<? super T> consumer) {
+    this.ifSuccess(Objects.requireNonNull(consumer));
+    return this;
+  }
+
+  default Result<T, E> onSuccess(Runnable runnable) {
+    this.ifSuccess(_ -> Objects.requireNonNull(runnable).run());
+    return this;
+  }
+
+  default Result<T, E> onFailure(Consumer<? super E> consumer) {
+    this.ifFailure(Objects.requireNonNull(consumer));
+    return this;
+  }
+
+  default Result<T, E> onFailure(Runnable runnable) {
+    this.ifFailure(_ -> Objects.requireNonNull(runnable).run());
+    return this;
+  }
+
 }
