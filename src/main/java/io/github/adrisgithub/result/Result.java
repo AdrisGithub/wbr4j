@@ -28,12 +28,4 @@ public sealed interface Result<T, E extends RuntimeException> permits FailureRes
         .orElse((Result) NULL_RESULT);
   }
 
-  @SuppressWarnings("unchecked")
-  static <E extends RuntimeException> Result<Void, E> ofNullable(E exception) {
-    if (Objects.isNull(exception)) {
-      return (Result<Void, E>) Result.of(new NullPointerException());
-    }
-    return new FailureResult<>(exception);
-  }
-
 }
