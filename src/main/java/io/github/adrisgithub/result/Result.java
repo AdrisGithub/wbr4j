@@ -121,6 +121,10 @@ public sealed interface Result<T, E extends RuntimeException> permits FailureRes
     return this.filter(predicate, IllegalStateException::new);
   }
 
+  default Result<T, RuntimeException> filterUnsafe(Predicate<T> predicate) {
+    return this.filter(predicate, IllegalStateException::new);
+  }
+
   @SuppressWarnings("unchecked")
   default <NE extends RuntimeException> Result<T, NE> filter(Predicate<T> predicate,
       Supplier<NE> supplier) {
