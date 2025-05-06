@@ -140,4 +140,14 @@ public sealed interface Result<T, E extends RuntimeException> permits FailureRes
         .orElse((Result<T, NE>) Result.of(Objects.requireNonNull(supplier).get()));
   }
 
+  @SuppressWarnings("unchecked")
+  default <NT> Result<NT, RuntimeException> flatMap(
+      Function<? super T, Result<? super NT, ? super RuntimeException>> function) {
+    return getValue()
+        .map(t -> (Result<NT, RuntimeException>)
+            Objects.requireNonNull(function).apply(t))
+        .orElse((Result<NT, RuntimeException>) this);
+  }
+
+
 }
