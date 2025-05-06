@@ -149,5 +149,13 @@ public sealed interface Result<T, E extends RuntimeException> permits FailureRes
         .orElse((Result<NT, RuntimeException>) this);
   }
 
+  default <NT> Result<NT, E> or(Supplier<NT> supplier) {
+    return map(_ -> Objects.requireNonNull(supplier.get()));
+  }
+
+  default <NT> Result<NT, RuntimeException> orUnsafe(Supplier<NT> supplier) {
+    return mapUnsafe(t -> Objects.requireNonNull(supplier.get()));
+  }
+
 
 }
