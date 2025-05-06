@@ -1,5 +1,6 @@
 package io.github.adrisgithub.result;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public final class SuccessResult<T, E extends RuntimeException> implements Result<T, E> {
@@ -24,6 +25,26 @@ public final class SuccessResult<T, E extends RuntimeException> implements Resul
   @Override
   public Optional<T> getValue() {
     return Optional.of(value);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof SuccessResult<?, ?> that)) {
+      return false;
+    }
+    return Objects.equals(value, that.value);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(value);
+  }
+
+  @Override
+  public String toString() {
+    return "Result[" +
+        "value=" + value +
+        ']';
   }
 
 }
