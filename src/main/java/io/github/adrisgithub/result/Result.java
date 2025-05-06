@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -114,6 +115,19 @@ public sealed interface Result<T, E extends RuntimeException> permits FailureRes
     return getError()
         .map(e -> (Result<T, NE>) Result.of((NE) Objects.requireNonNull(function.apply(e))))
         .orElse((Result<T, NE>) this);
+  }
+
+  default Result<T, IllegalStateException> filter(Predicate<T> predicate) {
+    return this.filter(predicate, IllegalStateException::new);
+  }
+
+  @SuppressWarnings("unchecked")
+  default <NE extends RuntimeException> Result<T, NE> filter(Predicate<T> predicate,
+      Supplier<NE> supplier) {
+    return getValue()
+        .filter(Objects.requireNonNull(predicate))
+        .map(_ -> (Result<T, NE>) this)
+        .orElse((Result<T, NE>) Result.of(Objects.requireNonNull(supplier).get()));
   }
 
 }
