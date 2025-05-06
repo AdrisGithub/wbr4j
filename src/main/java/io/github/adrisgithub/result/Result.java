@@ -3,6 +3,7 @@ package io.github.adrisgithub.result;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -96,6 +97,15 @@ public sealed interface Result<T, E extends RuntimeException> permits FailureRes
 
   default Stream<T> stream() {
     return this.isSuccess() ? Stream.of(this.get()) : Stream.empty();
+  }
+
+  @SuppressWarnings("unchecked")
+  default <NT> Result<NT, RuntimeException> map(
+      Function<? super T, ? super NT> function) {
+    return getValue()
+        .map(t -> (Result<NT, RuntimeException>) Result.from(() ->
+            (NT) Objects.requireNonNull(function).apply(t)))
+        .orElse((Result<NT, RuntimeException>) this);
   }
 
 }
