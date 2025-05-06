@@ -38,4 +38,12 @@ public sealed interface Result<T, E extends RuntimeException> permits FailureRes
     }
   }
 
+  default boolean isError() {
+    return ResultType.FAILURE.equals(getType());
+  }
+
+  default boolean isSuccess() {
+    return ResultType.SUCCESS.equals(getType());
+  }
+
 }
