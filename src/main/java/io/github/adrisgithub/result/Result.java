@@ -2,6 +2,7 @@ package io.github.adrisgithub.result;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public sealed interface Result<T, E extends RuntimeException> permits FailureResult, SuccessResult {
 
@@ -26,6 +27,15 @@ public sealed interface Result<T, E extends RuntimeException> permits FailureRes
     return Optional.ofNullable(value)
         .map(Result::of)
         .orElse((Result) NULL_RESULT);
+  }
+
+  @SuppressWarnings("unchecked")
+  static <T> Result<? super T, RuntimeException> from(Supplier<? super T> supplier) {
+    try {
+      return (Result) Result.ofNullable((T) Objects.requireNonNull(supplier).get());
+    } catch (RuntimeException exception) {
+      return (Result<? super T, RuntimeException>) Result.of(exception);
+    }
   }
 
 }
