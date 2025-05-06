@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public sealed interface Result<T, E extends RuntimeException> permits FailureResult, SuccessResult {
 
@@ -91,6 +92,10 @@ public sealed interface Result<T, E extends RuntimeException> permits FailureRes
   default T orElse(Supplier<? extends T> supplier) {
     return getValue()
         .orElseGet(Objects.requireNonNull(supplier));
+  }
+
+  default Stream<T> stream() {
+    return this.isSuccess() ? Stream.of(this.get()) : Stream.empty();
   }
 
 }
