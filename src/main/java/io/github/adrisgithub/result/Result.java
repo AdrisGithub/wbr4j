@@ -2,6 +2,7 @@ package io.github.adrisgithub.result;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public sealed interface Result<T, E extends RuntimeException> permits FailureResult, SuccessResult {
@@ -44,6 +45,14 @@ public sealed interface Result<T, E extends RuntimeException> permits FailureRes
 
   default boolean isSuccess() {
     return ResultType.SUCCESS.equals(getType());
+  }
+
+  default void ifSuccess(Consumer<? super T> consumer) {
+    this.getValue().ifPresent(Objects.requireNonNull(consumer));
+  }
+
+  default void ifFailure(Consumer<? super E> consumer) {
+    this.getError().ifPresent(Objects.requireNonNull(consumer));
   }
 
 }
