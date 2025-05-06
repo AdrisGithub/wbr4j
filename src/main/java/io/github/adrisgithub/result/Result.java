@@ -5,6 +5,8 @@ import java.util.Optional;
 
 public sealed interface Result<T, E extends RuntimeException> permits FailureResult, SuccessResult {
 
+  Result<Void, NullPointerException> NULL_RESULT = Result.of(new NullPointerException());
+
   Optional<E> getError();
 
   Optional<T> getValue();
@@ -21,10 +23,9 @@ public sealed interface Result<T, E extends RuntimeException> permits FailureRes
 
   @SuppressWarnings("unchecked")
   static <T> Result<T, NullPointerException> ofNullable(T value) {
-    if (Objects.isNull(value)) {
-      return (Result<T, NullPointerException>) Result.of(new NullPointerException());
-    }
-    return Result.of(value);
+    return Optional.ofNullable(value)
+        .map(Result::of)
+        .orElse((Result) NULL_RESULT);
   }
 
   @SuppressWarnings("unchecked")
