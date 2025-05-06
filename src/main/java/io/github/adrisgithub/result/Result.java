@@ -75,4 +75,9 @@ public sealed interface Result<T, E extends RuntimeException> permits FailureRes
     return this;
   }
 
+  default T get() throws E {
+    return getValue()
+        .orElseThrow(() -> getError().orElseThrow());
+  }
+
 }
